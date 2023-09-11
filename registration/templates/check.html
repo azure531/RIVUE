@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <a class="btn btn-primary" href="#" role="button">Link</a>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    
+  </body>
+</html>
+
+<p>
+  <a href="{% url 'insert-emp' %}"><-- Go To Home Page</a>
+</p>
+
+<td>
+  <a href="/edit/{{employee.pk}}">Update</a>
+</td>
+
+<td>
+  <a href="/edit/{{employee.pk}}">Update</a>
+</td>
+
+<td>
+  <a href="{% url 'edit' p.pk %}">Update</a>
+</td>
+
+def edit_emp(request,pk):
+    Product = RIVUE.objects.get(id=pk)
+    if request.method == 'POST':
+        return redirect('show')
+
+    context = {
+        'Product': Product,
+    }
+
+    return render(request,'edit.html',context)
+
+
+
+edit 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+</head>
+<style>
+    table {
+        border: 8px outset;
+        border-radius: 10px;
+        border-spacing: 10px;
+        padding: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    th,
+    td {
+        padding: 5px;
+    }
+</style>
+
+<body>
+    <h2 style="text-align:center"> Update Details of the Product </h2>
+    <form method="POST">
+        {% csrf_token %}
+        <table style="width:50%" align="center">
+            <tr>
+                <td>Product Model Number</td>
+                <td><input type="text" value="{{ Product.ProModel }}" name="ProModel</td>
+            </tr> 
+            
+            <tr>
+                <td>Product Name</td>
+                <td><input type=" text" value="{{ Product.ProName }}" name="ProName" </td>
+            </tr>
+            <tr>
+                <td>Product Review</td>
+                <td><input type="text" value="{{ Product.ProRev }}" name="ProRev" </td>
+            </tr>
+            <tr>
+                <td>User Email</td>
+                <td><input type="email" value="{{ Product.ProEmail }}" name="ProEmail" </td>
+            </tr>
+            <tr>
+                <td>ProCom</td>
+                <td><input type="text" value="{{ Product.ProCom}}" name="ProCom" </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="submit" class="btn btn-success"> </td>
+            </tr>
+        </table>
+
+
+    </form>
+</body>
+
+</html>
+
+
+
+show
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Search Employee</title>
+</head>
+<style>
+    table {
+        border: 8px outset;
+        border-radius: 10px;
+        border-spacing: 10px;
+        padding: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    th,
+    td {
+        padding: 5px;
+        border: 1px solid;
+    }
+</style>
+
+<body>
+    <h2 style="text-align:center"> Employee Information </h2>
+    <table align="center" style="margin: 0px auto;">
+        <thead>
+            <tr>
+                <th>Product Model</th>
+                <th>Product Name</th>
+                <th>Product Review</th>
+                <th>User Email</th>
+                <th>Product Company</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in Product %}
+            <tr>
+                <td>{{p.ProModel}}</td>
+                <td>{{p.ProName}}</td>
+                <td>{{p.ProRev}}</td>
+                <td>{{p.ProEmail}}</td>
+                <td>{{p.ProCom}}</td>
+                
+                
+                
+                <td>
+                    <a href="/edit/{{p.pk}}">Update</a>
+                </td>
+
+                <td>
+                    <a href="/remove/{{p.pk}}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br><br>
+    <div class="alert alert-danger" role="alert">
+        Do you want to enter more Products?
+    </div>
+    <p>
+        <a href="{% url 'home' %}"><-- Go To Home Page</a>
+    </p>
+    
+</body>
+
+</html>
+
+urls 
+from django.contrib import admin
+from django.urls import path,include
+from app1 import views
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('',views.LandingPage,name='index') ,
+    path('show/', views.show_emp, name='show'),
+    path('search/', views.search_product, name='search'),
+    path('edit/<int:pk>',views.edit_emp,name='edit'),
+    path('remove/<int:pk>',views.remove_emp,name='delete'),
+    path('signup/',views.SignupPage,name='signup'),
+    path('login/',views.LoginPage,name='login'),
+    path('home/',views.HomePage,name='home'),
+    path('logout/',views.LogoutPage,name='logout'),
+
+
+]
